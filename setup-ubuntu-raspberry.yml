@@ -1,0 +1,13 @@
+---
+- name: setup ubuntu raspberry pi
+  hosts: all
+  roles:
+    #- role: install-linux-basic
+    #- role: install-docker
+    #  vars:
+    #    user_to_docker_group: snooops
+    - role: manage-portainer
+      vars: 
+        docker_user: snooops
+    
+    

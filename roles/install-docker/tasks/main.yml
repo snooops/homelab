@@ -1,0 +1,69 @@
+---
+# tasks file for install-docker
+- name: Install some needfull tools
+  become: true
+  ansible.builtin.apt:
+    pkg:
+    - curl
+    - ca-certificates
+    - gnupg
+
+- name: Remove unofficial Docker packages 
+  ansible.builtin.apt: pkg={{item}} state=absent
+  with_items:
+    - docker.io
+    - docker-compose
+    - docker-doc
+    - podman-docker
+
+- name: Install keyrings
+  become: true
+  ansible.builtin.command: install -m 0755 -d /etc/apt/keyrings
+
+- name: get Docker key
+  become: true
+  ansible.builtin.get_url:
+    url: https://download.docker.com/linux/debian/gpg
+    dest: /tmp/docker.gpg
+
+
+- name: remove old gpg file, just in case
+  become: true
+  ansible.builtin.file: 
+    path: /etc/apt/keyrings/docker.gpg
+    state: absent
+
+- name: format gpg key proper
+  become: true
+  ansible.builtin.command: gpg --dearmor -o /etc/apt/keyrings/docker.gpg /tmp/docker.gpg
+
+- name: add official Docker repo
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=arm64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    state: present
+
+- name: Install Docker
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+    pkg:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-buildx-plugin
+    - docker-compose-plugin
+
+- name: add my user account to docker group
+  become: true
+  ansible.builtin.user:
+    name: "{{ user_to_docker_group }}"
+    append: true
+    groups:
+      - docker
+
+- name: write hostname using jinja2
+  become: true
+  ansible.builtin.template:
+    src: templates/hosts.j2
+    dest: /etc/hosts

@@ -1,0 +1,19 @@
+---
+- name: Upgrade packages 
+  become: true
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: yes
+
+- name: Install some needfull tools
+  become: true
+  ansible.builtin.apt:
+    pkg:
+    - htop
+    - vim
+    - lm-sensors
+    - sysstat
+    - net-tools
+    - curl
+    - ca-certificates
+    - gnupg

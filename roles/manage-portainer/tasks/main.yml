@@ -1,0 +1,57 @@
+---
+# tasks file for manage-portainer
+- name: Create portainer directory
+  file: 
+    path: "/home/{{ docker_user }}/portainer"
+    state: directory
+
+- name: Copy portainer agent to agents
+  copy:
+    src: portainer-agent-compose.yml
+    dest: "/home/{{ docker_user }}/portainer/docker-compose.yml"
+  when: "'worker' in group_names"
+
+- name: Copy portainer to manager
+  copy:
+    src: portainer-compose.yml
+    dest: "/home/{{ docker_user }}/portainer/docker-compose.yml"
+  when: "'main' in group_names"
+
+
+- name: Start portainer
+  command: 
+    cmd: docker compose up -d
+    chdir: "/home/{{ docker_user }}/portainer/"
+
+- name: Portainer API Authentication
+  ansible.builtin.uri:
+    url: "http://{{ inventory_hostname }}:9000/api/auth"
+    method: POST
+    body_format: json
+    return_content: yes
+    body: 
+      password: "{{ portainer_api_password }}"
+      username: "{{ portainer_api_user }}"
+  delegate_to: 127.0.0.1
+  register: portainer_api_auth_response
+  when: "'main' in group_names"
+
+- name: Portainer API add Endpoint
+  ansible.builtin.uri:
+    url: "http://{{ groups.main | first }}:9000/api/endpoints"
+    method: POST
+    body_format: form-urlencoded
+    return_content: yes
+    body: 
+      Name: "{{ item }}"
+      EndpointCreationType: 2
+      URL: "tcp://{{ item }}:9001"
+      TLS: "true"
+      TLSSkipVerify: "true"
+      TLSSkipClientVerify: "true"
+    headers:
+      Authorization: "Bearer {{ portainer_api_auth_response.json.jwt }}"
+  delegate_to: 127.0.0.1
+  with_items: "{{ groups.worker }}"
+  when: "'main' in group_names"
+  
