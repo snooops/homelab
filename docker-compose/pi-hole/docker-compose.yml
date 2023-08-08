@@ -3,8 +3,8 @@ version: "3"
 # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
 
 services:
-  pihole:
-    container_name: pihole
+  pi-hole:
+    container_name: pi-hole
     image: pihole/pihole:2023.05.2
     # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
     ports:
