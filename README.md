@@ -1,2 +1,2 @@
 # homelab
-docker-compose defintions i use
+basicly ansible playbooks with ansible-vault encrypted variables
