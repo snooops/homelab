@@ -1,13 +1,24 @@
 ---
 - name: setup ubuntu raspberry pi
   hosts: all
+  vars:
+    my_user: snooops
   roles:
-    #- role: install-linux-basic
-    #- role: install-docker
-    #  vars:
-    #    user_to_docker_group: snooops
-    - role: manage-portainer
-      vars: 
-        docker_user: snooops
+    - role: install-linux-basic
+    - role: install-docker
+      vars:
+        user_to_docker_group: "{{ my_user }}"
+    # docker swarm baby - not using this type of setup now
+    # - role: manage-portainer
+    #   vars: 
+    #     docker_user: "{{ my_user }}"
     
-    
+- name: create docker swarm
+  hosts: manager[0]
+  roles:
+    - role: docker-swarm-create
+  
+- name: join worker
+  hosts: worker
+  roles:
+    - role: docker-swarm-join

@@ -1,0 +1,9 @@
+---
+
+- debug: var=hostvars[item]['docker_swarm_join_token']
+  with_items: "{{ groups['manager'][0] }}"
+
+# hundreds of worker nodes shall now join
+- name: Let worker nodes join
+  ansible.builtin.command: "docker swarm join --token {{ hostvars[item]['docker_swarm_join_token']['stdout'] }} {{ hostvars[item]['ansible_hostname'] }}"
+  with_items: "{{ groups['manager'][0] }}"

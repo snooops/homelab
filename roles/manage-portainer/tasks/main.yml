@@ -17,7 +17,6 @@
     dest: "/home/{{ docker_user }}/portainer/docker-compose.yml"
   when: "'main' in group_names"
 
-
 - name: Start portainer
   command: 
     cmd: docker compose up -d

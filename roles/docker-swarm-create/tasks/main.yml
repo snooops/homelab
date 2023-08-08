@@ -1,0 +1,17 @@
+---
+
+- name: Verify if node is already in swarm mode
+  ansible.builtin.command: "docker info --format {{ '{{' }}.Swarm.LocalNodeState{{ '}}' }}"
+  register: docker_swarm_mode
+
+- name: Create Swarm on manager
+  ansible.builtin.command: "docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}"
+  run_once: true
+  register: manager_output
+  when: docker_swarm_mode.stdout == "inactive"
+
+# execute on the same host as above the following to create a token and store it
+- name: Creating join-token
+  ansible.builtin.command: "docker swarm join-token worker -q"
+  run_once: true
+  register: docker_swarm_join_token
