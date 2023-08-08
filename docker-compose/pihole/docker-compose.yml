@@ -14,8 +14,8 @@ services:
       - "80:80/tcp"
     environment:
       TZ: 'Europe/Berlin'
-      # WEBPASSWORD: 'set a secure password here or it will be random'
-    # Volumes store your data between container upgrades
+      WEBPASSWORD: {{ WEBPASSWORD }}
+      
     volumes:
       - './etc-pihole:/etc/pihole'
       - './etc-dnsmasq.d:/etc/dnsmasq.d'
