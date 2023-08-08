@@ -34,8 +34,8 @@ services:
       - RATE_LIMIT="0/0"
 
     volumes:
-      - './etc-pihole:/etc/pihole'
-      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+      - pi-hole_config:/etc/pihole'
+      - pi-hole_dnsmasq:/etc/dnsmasq.d'
     #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
     cap_add:
       - NET_ADMIN
@@ -51,3 +51,9 @@ services:
 secrets:
   pi-hole_webpassword:
     external: true
+
+volumes:
+  pi-hole_config:
+    driver: local
+  pi-hole_dnsmasq:
+    driver: local
