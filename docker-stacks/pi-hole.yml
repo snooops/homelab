@@ -47,6 +47,13 @@ services:
           - "node.role==worker"
     secrets:
       - pi-hole_webpassword
+    networks:
+      - host
+
+networks:
+  host:
+    name: host
+    external: true
 
 secrets:
   pi-hole_webpassword:
