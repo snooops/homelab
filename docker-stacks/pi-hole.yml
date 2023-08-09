@@ -31,8 +31,9 @@ services:
       - pi-hole_config:/etc/pihole'
       - pi-hole_dnsmasq:/etc/dnsmasq.d'
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
+        max_replicas_per_node: 1
         constraints:
           - "node.role==worker"      
     secrets:
