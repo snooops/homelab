@@ -23,7 +23,7 @@ services:
       - TEMPERATUREUNIT="c"
       - WEBUIBOXEDLAYOUT="boxed"
       - QUERY_LOGGING=true
-      - WEBTHEME="default-dark"
+      - WEBTHEME=default-dark
       - DNSMASQ_LISTENING="all"
       - SKIPGRAVITYONBOOT=1
       - RATE_LIMIT="0/0"
