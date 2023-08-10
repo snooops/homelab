@@ -62,6 +62,9 @@
     groups:
       - docker
 
+- name: Re-evaluate groups of user
+  meta: reset_connection
+
 - name: write hostname using jinja2
   become: true
   ansible.builtin.template:

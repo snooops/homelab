@@ -4,8 +4,8 @@
   vars:
     my_user: snooops
   roles:
-    - role: linux-basic-install
-    - role: docker-install
+    - role: linux_basic_install
+    - role: docker_install
       vars:
         user_to_docker_group: "{{ my_user }}"
     # docker swarm baby - not using this type of setup now
@@ -16,9 +16,9 @@
 - name: create docker swarm
   hosts: manager[0]
   roles:
-    - role: docker-swarm-create
+    - role: docker_swarm_create
   
 - name: join worker
   hosts: worker
   roles:
-    - role: docker-swarm-join
+    - role: docker_swarm_join
