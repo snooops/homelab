@@ -1,43 +1,36 @@
-version: "3"
+version: "3.8"
 
 # https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
 
 services:
   pi-hole:
-    container_name: pi-hole
-    image: pihole/pihole:2023.05.2
-    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
-    ports:
-      - "53:53/tcp"
-      - "53:53/udp"
-      - "67:67/udp"
-      - "80:80/tcp"
+    image: pihole/pihole:2023.10.0
+    restart: unless-stopped
     environment:
-      TZ: 'Europe/Berlin'
-      WEBPASSWORD: "${ WEBPASSWORD }"
-      PIHOLE_DNS_: "176.9.93.198;194.25.0.60;82.96.64.2"
-      DNSSEC: true
-      DNS_BOGUS_PRIV: true
-      DNS_FQDN_REQUIRED: true
-      REV_SERVER: true
-      REV_SERVER_DOMAIN: "snooops.net"
-      REV_SERVER_TARGET: "192.168.1.1"
-      REV_SERVER_CIDR: "192.168.1.0/24"
-      DHCP_ACTIVE: false
-      PIHOLE_DOMAIN: "snooops.net"
-      IPv6: true
-      TEMPERATUREUNIT: "c"
-      WEBUIBOXEDLAYOUT: "boxed"
-      QUERY_LOGGING: true
-      WEBTHEME: "default-dark"
-      DNSMASQ_LISTENING: "all"
-      SKIPGRAVITYONBOOT: 1
-      RATE_LIMIT: "0/0"
-
+      - TZ=Europe/Berlin
+      - WEBPASSWORD=""
+      - PIHOLE_DNS_=192.168.1.1
+      - DNSSEC=true
+      - DNS_BOGUS_PRIV=true
+      - DNS_FQDN_REQUIRED=true
+      - REV_SERVER=true
+      - REV_SERVER_DOMAIN=snooops.net
+      - REV_SERVER_TARGET=192.168.1.1
+      - REV_SERVER_CIDR=192.168.1.0/24
+      - DHCP_ACTIVE=false
+      - PIHOLE_DOMAIN=snooops.net
+      - IPv6=true
+      - TEMPERATUREUNIT=c
+      - WEBUIBOXEDLAYOUT=boxed
+      - QUERY_LOGGING=true
+      - WEBTHEME=default-dark
+      - DNSMASQ_LISTENING=all
+      - SKIPGRAVITYONBOOT=1
+      - RATE_LIMIT=0/0
     volumes:
-      - './etc-pihole:/etc/pihole'
-      - './etc-dnsmasq.d:/etc/dnsmasq.d'
-    #   https://github.com/pi-hole/docker-pi-hole#note-on-capabilities
-    cap_add:
-      - NET_ADMIN
-    restart: unless-stopped # Recommended but not required (DHCP needs NET_ADMIN)  
+      - pi-hole_config:/etc/pihole'
+      - pi-hole_dnsmasq:/etc/dnsmasq.d'
+
+volumes:
+  pi-hole_config:
+  pi-hole_dnsmasq:
